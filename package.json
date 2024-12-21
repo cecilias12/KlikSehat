@@ -1,0 +1,21 @@
+{
+    "name": "my-smart-contract",
+    "version": "1.0.0",
+    "description": "Proyek smart contract untuk KlikSehat",
+    "main": "truffle-config.js",
+    "scripts": {
+      "test": "truffle test",
+      "migrate": "truffle migrate",
+      "console": "truffle console",
+      "ganache": "ganache"
+    },
+    "author": "Your Name",
+    "license": "MIT",
+    "devDependencies": {
+      "truffle": "^5.11.5",
+      "ganache": "^7.9.0"
+    },
+    "dependencies": {
+      "@openzeppelin/contracts": "^4.8.3"
+    }
+  }  
