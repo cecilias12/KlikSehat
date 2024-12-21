@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KlikSehat - Konsultasi Dokter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .navbar {
+            background-color: #4c93af;
+        }
+
+        .navbar-brand {
+            color: white;
+            font-weight: bold;
+        }
+
+        .hero-section {
+            background: #f5f5f5;
+            padding: 50px 0;
+            text-align: center;
+        }
+
+        .feature-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+        }
+
+        .feature-card img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h4 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .feature-card a {
+            color: #3b8dad;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .feature-card a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">KlikSehat</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1>Konsultasi Dokter di Klinik</h1>
+            <p>Buat janji untuk konsultasi langsung dengan dokter di klinik</p>
+            <div class="feature-card">
+                <img src="https://th.bing.com/th/id/OIP.3ghUW-K6tVwZ8kT7Jz1G1QAAAA?w=275&h=180&c=7&r=0&o=5&pid=1.7" alt="Clinic Consultation">
+                <h4>Clinic Consultation</h4>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#clinicModal">Konsultasi di Klinik &rarr;</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Clinic Consultation Modal -->
+    <div class="modal fade" id="clinicModal" tabindex="-1" aria-labelledby="clinicModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="clinicModalLabel">Konsultasi di Klinik</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="appointmentForm">
+                        <div class="mb-3">
+                            <label for="doctor" class="form-label">Pilih Dokter</label>
+                            <select id="doctor" class="form-select" required>
+                                <option value="">Pilih Dokter...</option>
+                                <option value="Dr. Andi Susanto">Dr. Andi Susanto - Sp. Jantung</option>
+                                <option value="Dr. Siti Aminah">Dr. Siti Aminah - Sp. Anak</option>
+                                <option value="Dr. Budi Prasetyo">Dr. Budi Prasetyo - Sp. Bedah</option>
+                                <option value="Dr. Rina Sari">Dr. Rina Sari - Sp. Gigi</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ethPrice" class="form-label">Harga ETH</label>
+                            <input type="text" id="ethPrice" class="form-control" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="appointmentDate" class="form-label">Pilih Tanggal</label>
+                            <input type="date" class="form-control" id="appointmentDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="appointmentTime" class="form-label">Pilih Waktu</label>
+                            <input type="time" class="form-control" id="appointmentTime" required>
+                        </div>
+                        <button type="button" id="createAppointment" class="btn btn-success w-100">Buat Janji</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paymentModalLabel">Pembayaran</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Total Pembayaran: <strong id="paymentAmount">0 ETH</strong></p>
+                    <button type="button" id="payButton" class="btn btn-primary w-100">Bayar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const doctorSelect = document.getElementById('doctor');
+            const ethPriceInput = document.getElementById('ethPrice');
+            const paymentAmount = document.getElementById('paymentAmount');
+
+            // Harga ETH untuk setiap dokter
+            const doctorPrices = {
+                "Dr. Andi Susanto": "0.05",
+                "Dr. Siti Aminah": "0.03",
+                "Dr. Budi Prasetyo": "0.07",
+                "Dr. Rina Sari": "0.02"
+            };
+
+            // Update ETH price when doctor is selected
+            doctorSelect.addEventListener('change', function () {
+                ethPriceInput.value = doctorPrices[doctorSelect.value] || "";
+            });
+
+            document.getElementById('createAppointment').addEventListener('click', function () {
+                const ethPrice = ethPriceInput.value;
+
+                if (!ethPrice) {
+                    alert('Pilih dokter terlebih dahulu!');
+                    return;
+                }
+
+                paymentAmount.textContent = `${ethPrice} ETH`;
+                new bootstrap.Modal(document.getElementById('paymentModal')).show();
+            });
+        });
+    </script>
+
+        <!-- Payment Modal -->
+        <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="paymentModalLabel">Pembayaran</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Total Pembayaran: <strong id="paymentAmount">0 ETH</strong></p>
+                        <button type="button" id="payButton" class="btn btn-primary w-100">Bayar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        
+        <!-- Tambahkan kode ini di bawah Bootstrap JS -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const doctorSelect = document.getElementById('doctor');
+                const ethPriceInput = document.getElementById('ethPrice');
+                const paymentAmount = document.getElementById('paymentAmount');
+                const payButton = document.getElementById('payButton');
+    
+                // Harga ETH untuk setiap dokter
+                const doctorPrices = {
+                    "Dr. Andi Susanto": "0.05",
+                    "Dr. Siti Aminah": "0.03",
+                    "Dr. Budi Prasetyo": "0.07",
+                    "Dr. Rina Sari": "0.02"
+                };
+    
+                // Update ETH price when doctor is selected
+                doctorSelect.addEventListener('change', function () {
+                    ethPriceInput.value = doctorPrices[doctorSelect.value] || "";
+                });
+    
+                document.getElementById('createAppointment').addEventListener('click', function () {
+                    const ethPrice = ethPriceInput.value;
+    
+                    if (!ethPrice) {
+                        alert('Pilih dokter terlebih dahulu!');
+                        return;
+                    }
+    
+                    paymentAmount.textContent = `${ethPrice} ETH`;
+                    new bootstrap.Modal(document.getElementById('paymentModal')).show();
+                });
+    
+                // Fungsi untuk menghubungkan ke MetaMask dan melakukan pembayaran
+                async function payWithMetaMask() {
+                    if (typeof window.ethereum === 'undefined') {
+                        alert('MetaMask tidak terdeteksi. Silakan install MetaMask terlebih dahulu.');
+                        return;
+                    }
+    
+                    try {
+                        // Meminta akses ke akun MetaMask
+                        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                        const sender = accounts[0]; // Mengambil akun pertama
+                        const ethAmount = parseFloat(ethPriceInput.value);
+    
+                        if (!ethAmount) {
+                            alert('Tidak ada jumlah pembayaran yang valid.');
+                            return;
+                        }
+    
+                        // Konversi ETH ke Wei
+                        const amountInWei = (ethAmount * 10 ** 18).toString();
+    
+                        // Mengirim transaksi
+                        const tx = await window.ethereum.request({
+                            method: 'eth_sendTransaction',
+                            params: [
+                                {
+                                    from: sender,
+                                    to: '0x1234567890abcdef1234567890abcdef12345678', // Ganti dengan alamat penerima
+                                    value: amountInWei,
+                                    gas: '21000',
+                                },
+                            ],
+                        });
+    
+                        alert(`Pembayaran berhasil dengan TxHash: ${tx}`);
+                    } catch (error) {
+                        console.error('Pembayaran gagal:', error);
+                        alert('Terjadi kesalahan saat pembayaran.');
+                    }
+                }
+    
+                // Tambahkan event listener ke tombol bayar
+                payButton.addEventListener('click', payWithMetaMask);
+            });
+        </script>
+    </body>
+
+</html>
